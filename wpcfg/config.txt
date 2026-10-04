@@ -1,0 +1,6 @@
+[HOURN]: {23};
+[MINUTEN]: {10};
+[HOURM]: {23};
+[MINUTEM]: {12};
+[WP1]: {/home/unram/wallpapers/helloTerry.jpeg};
+[WP2]: {/home/unram/wallpapers/downTerry.jpeg};
