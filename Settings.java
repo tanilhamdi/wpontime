@@ -46,6 +46,60 @@ public class Settings {
     return freshLines;
   }
 
+private void autoWpSetup() {
+    try {
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (!osName.contains("linux")) {
+            System.out.println("Automatic background setup is currently supported only on Linux.");
+            return;
+        }
+
+        String userHome = System.getProperty("user.home");
+        File systemdDir = new File(userHome + "/.config/systemd/user");
+        if (!systemdDir.exists()) {
+            systemdDir.mkdirs();
+        }
+
+        File serviceFile = new File(systemdDir, "wpontime.service");
+        try (PrintWriter writer = new PrintWriter(serviceFile)) {
+            writer.println("[Unit]");
+            writer.println("Description=Her 5 dakikada bir duvar kagidini kontrol et");
+            writer.println();
+            writer.println("[Service]");
+            writer.println("Type=oneshot");
+            writer.println("ExecStart=/usr/local/bin/wpontime");
+        }
+
+        File timerFile = new File(systemdDir, "wpontime.timer");
+        try (PrintWriter writer = new PrintWriter(timerFile)) {
+            writer.println("[Unit]");
+            writer.println("Description=Her 5 dakikada bir duvar kagidini kontrol et");
+            writer.println();
+            writer.println("[Timer]");
+            writer.println("OnActiveSec=1sec");
+            writer.println("OnUnitActiveSec=1min");
+            writer.println();
+            writer.println("[Install]");
+            writer.println("WantedBy=timers.target");
+        }
+
+        ProcessBuilder pbReload = new ProcessBuilder("systemctl", "--user", "daemon-reload");
+        ProcessBuilder pbEnable = new ProcessBuilder("systemctl", "--user", "enable", "--now", "wpontime.timer");
+        
+        pbReload.start().waitFor();
+        int exitCode = pbEnable.start().waitFor();
+
+        if (exitCode == 0) {
+            System.out.println("Successfully configured and started automatic background systemd timer.");
+        } else {
+            System.out.println("Files were created, but failed to start systemd timer automatically.");
+        }
+
+    } catch (Exception e) {
+        System.out.println("Error setting up systemd automation: " + e.getMessage());
+    }
+}
+
   void setup(){
     Scanner scanner = new Scanner(System.in);
     System.out.println("Enter the starting hour for the first wallpaper period (2 digits)");
@@ -70,6 +124,22 @@ public class Settings {
 
     List<String> hourupdatedList = updateHours(this.hourN, this.minuteN, this.hourM, this.minuteM);
     List<String> wpupdatedList = updateWPs(hourupdatedList);
+
+    System.out.println("Do you want wpontime run itself automatically? (Y/n)");
+    System.out.print("-> ");
+    String automatic  = scanner.nextLine();
+    if (automatic.isBlank()) {
+      autoWpSetup();
+    }else if(automatic.toLowerCase().equals("y")){
+      autoWpSetup();
+    }else if(automatic.toLowerCase().equals("n")){
+      System.out.println("Automatic setup skipped by user.");
+    }else{
+      System.out.println("Invalid option");
+      scanner.close();
+      return;
+    }
+
     overwrite(wpupdatedList);
     scanner.close();
   }
