@@ -106,3 +106,7 @@ systemctl --user enable --now wpontime.timer
 ## License
 
 Distributed under the MIT License. See `LICENSE` for more information.
+
+## About Language Preference 
+
+I know there are better options than java for this project but don't blame me I'm taking java class currently. 😭
