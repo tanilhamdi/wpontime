@@ -105,7 +105,7 @@ systemctl --user enable --now wpontime.timer
 
 ## About Language Preference 
 
-I know there are better options than java for this project but don't blame me I'm taking java class currently. 😭
+I know there are better options than java for this project but don't blame me, I'm taking java class currently. 😭
 
 ## License
 
