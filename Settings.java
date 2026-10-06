@@ -63,7 +63,6 @@ private void autoWpSetup() {
         File serviceFile = new File(systemdDir, "wpontime.service");
         try (PrintWriter writer = new PrintWriter(serviceFile)) {
             writer.println("[Unit]");
-            writer.println("Description=Her 5 dakikada bir duvar kagidini kontrol et");
             writer.println();
             writer.println("[Service]");
             writer.println("Type=oneshot");
@@ -73,7 +72,6 @@ private void autoWpSetup() {
         File timerFile = new File(systemdDir, "wpontime.timer");
         try (PrintWriter writer = new PrintWriter(timerFile)) {
             writer.println("[Unit]");
-            writer.println("Description=Her 5 dakikada bir duvar kagidini kontrol et");
             writer.println();
             writer.println("[Timer]");
             writer.println("OnActiveSec=1sec");
